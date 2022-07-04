@@ -1,5 +1,5 @@
 # GNetCo - Go Netconf basic library
-Simple library  which works with
+Simple netconf library which minimal high level functions.
 
 ```go
 package main
