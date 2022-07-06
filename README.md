@@ -1,7 +1,10 @@
 # GNetCo - Go Netconf basic library
-Simple netconf library which minimal high level functions.
+This is netconf library with minimal high level functions. This time it doesn't perform any error handling.
+All you need to do is make new connection and send valid rpc XML request to the device.
+TimeMe function is used to get rpc execution time.
 
-```go
+### Quickstart
+```golang
 package main
 
 import (
@@ -20,11 +23,9 @@ func main() {
 
 	hn := `<rpc message-id="105" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"><get-sessions/></rpc>`
 
-	// elapsed = c.TimeMe(c.Exec, []byte(hn))
-	// log.Printf("GetHN took %s", elapsed)
-
 	res, _ := c.Exec([]byte(hn))
 	fmt.Println(string(res))
 }
-
 ```
+
+Copyright (c) 2022

@@ -1,4 +1,4 @@
-module gnetco
+module github.com/ivanovuri/gnetco
 
 go 1.18
 
