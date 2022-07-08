@@ -1,7 +1,10 @@
-# GNetCo - Go Netconf basic library
-This is netconf library with minimal high level functions. This time it doesn't perform any error handling.
+# GNetCo - Go NETCONF basic library
+
+This is NETCONF library with minimal high level functions. This time it doesn't perform any error handling, but it will do.
 All you need to do is make new connection and send valid rpc XML request to the device.
-TimeMe function is used to get rpc execution time.
+
+Lock function is used to lock configuration during performing Exec function, where unlock performed after exiting Lock function.
+TimeMe function is used to get rpc execution time. Just for understanding how long process take place.
 
 ### Quickstart
 ```golang

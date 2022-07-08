@@ -1,4 +1,4 @@
-package packme
+package gnetco
 
 import (
 	"bytes"
@@ -22,7 +22,6 @@ type GNetCo interface {
 }
 
 type netconf struct {
-	// Info   string
 	reader  io.Reader
 	writer  io.Writer
 	session *ssh.Session
@@ -30,9 +29,10 @@ type netconf struct {
 
 func Connect(socket, username, password string) (GNetCo, error) {
 	n := new(netconf)
-	n.connect(socket, username, password)
-	// if err := n.connect(socket, username, password); err != nil {
-	// }
+	if err := n.connect(socket, username, password); err != nil {
+		return nil, fmt.Errorf("connection error %s", err)
+	}
+
 	rpcHelloString := `<?xml version="1.0" encoding="UTF-8"?>
 	<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
 		<capabilities>
@@ -97,12 +97,11 @@ func (n *netconf) Exec(rpcMesage []byte) ([]byte, error) {
 }
 
 func (n *netconf) TimeMe(f func([]byte) ([]byte, error), rpcMessage []byte) time.Duration {
-	start := time.Now()
+	startTime := time.Now()
 	f(rpcMessage)
-	elapsed := time.Since(start)
-	// log.Printf("GetRunningConfig took %s", elapsed)
+	duration := time.Since(startTime)
 
-	return elapsed
+	return duration
 }
 
 func (n *netconf) Lock(f func([]byte) ([]byte, error), rpcMessage []byte) ([]byte, error) {
@@ -115,13 +114,7 @@ func (n *netconf) Lock(f func([]byte) ([]byte, error), rpcMessage []byte) ([]byt
 		</lock>
 	</rpc>`
 
-	// start := time.Now()
-	/*res, _ := */
 	n.Exec([]byte(lockMessage))
-	// elapsed := time.Since(start)
-	// log.Printf("Lock took %s", elapsed)
-
-	// fmt.Println(string(res))
 	defer n.unlock()
 
 	return f(rpcMessage)
@@ -143,7 +136,6 @@ func (n *netconf) Disconnect() {
 	n.session.Close()
 }
 
-// func (n *netconf) send(rpcMessage string) error {
 func (n *netconf) send(message []byte) error {
 	message = append(message, []byte(enderString)...)
 
@@ -174,7 +166,6 @@ func (n *netconf) receive() ([]byte, error) {
 			if end > -1 {
 				receiveBytesBuffer.Write(buf[0:end])
 				return receiveBytesBuffer.Bytes(), nil
-				// break
 			}
 
 			if pos > 0 {
